@@ -290,12 +290,15 @@
     <Compile Include="Assets\PostProcessing\Runtime\Utils\GraphicsUtils.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
     <Compile Include="Assets\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
+    <Compile Include="Assets\Scripts\BetterButton.cs" />
     <Compile Include="Assets\Scripts\FollowCamera.cs" />
     <Compile Include="Assets\Scripts\KartRoot.cs" />
+    <Compile Include="Assets\Scripts\KartUI.cs" />
     <Compile Include="Assets\Scripts\RandomForce.cs" />
     <Compile Include="Assets\Scripts\Rocket.cs" />
     <Compile Include="Assets\Scripts\RocketItem.cs" />
     <Compile Include="Assets\Scripts\Suspension.cs" />
+    <Compile Include="Assets\Scripts\Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Cartoon Hot Rod Coupe\manual.txt" />

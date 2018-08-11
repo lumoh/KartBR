@@ -10,6 +10,9 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
 {
     public static GameObject LocalPlayerInstance;
 
+    public KartUI KartUIPrefab;
+    private KartUI kartUI;
+
     [Header("Attributes")]
     public Rigidbody Body;
     public float Gravity = 10f;
@@ -52,6 +55,11 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
         layerMask = 1 << LayerMask.NameToLayer("Kart");
         layerMask = ~layerMask;
 
+        if(KartUIPrefab != null)
+        {
+            kartUI = Instantiate(KartUIPrefab);
+        }
+
         DontDestroyOnLoad(gameObject);
     }
 
@@ -60,20 +68,22 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    public void OnDisable()
+    private void initGUIControls()
     {
-        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+            kartUI.GoBtn.onButtonDown.AddListener(() =>
+            {
+                powerInput = 1.0f;
+            });
+        kartUI.GoBtn.onButtonUp.AddListener(() =>
+            {
+                powerInput = 0f;
+            });
+        kartUI.FireBtn.onButtonDown.AddListener(() =>
+            {
+
+            });
     }
 
-    void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadingMode)
-    {
-        this.CalledOnLevelWasLoaded(scene.buildIndex);
-    }
-
-    void CalledOnLevelWasLoaded(int level)
-    {
-        // nothing
-    }
 
     void Update()
     {
@@ -217,6 +227,21 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
             }
         }
         return false;
+    }
+
+    public void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadingMode)
+    {
+        this.CalledOnLevelWasLoaded(scene.buildIndex);
+    }
+
+    void CalledOnLevelWasLoaded(int level)
+    {
+        // nothing
     }
 
     void OnDrawGizmos()
