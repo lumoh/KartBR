@@ -13,21 +13,25 @@ public class KartUI : MonoBehaviour
     public BetterButton FireBtn;
     public Slider WheelSlider;
 
-    void Start()
+    private void Awake()
     {
-        PlaceText.text = "1st";
-
-        if (Application.isEditor)
-        {
-            Util.SetActive(GoBtn, false);
-            Util.SetActive(FireBtn, false);
-            Util.SetActive(WheelSlider, false);
-        }
+        Util.SetActive(GoBtn, false);
+        Util.SetActive(FireBtn, false);
+        Util.SetActive(WheelSlider, false);
     }
 
-    void Update()
+    void Start()
     {
+        SpeedText.text = "0 mph";
+        PlaceText.text = "1st";
+        TimeText.text = "00:00";
+    }
 
+    public void EnableMobileControls()
+    {
+        Util.SetActive(GoBtn, true);
+        Util.SetActive(FireBtn, true);
+        Util.SetActive(WheelSlider, true);
     }
 
     public void SetSpeed(int speed)

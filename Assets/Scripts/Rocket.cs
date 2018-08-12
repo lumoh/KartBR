@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rocket : MonoBehaviour
+public class Rocket : Photon.PunBehaviour
 {
     public float Lifetime = 3.0f;
     public Vector3 Offset;
@@ -74,7 +74,8 @@ public class Rocket : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     private void OnDestroy()

@@ -11,7 +11,8 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
     public static GameObject LocalPlayerInstance;
 
     public KartUI KartUIPrefab;
-    private KartUI kartUI;
+    [HideInInspector] public KartUI kartUI;
+    public bool UseGUIControls;
 
     [Header("Attributes")]
     public Rigidbody Body;
@@ -47,6 +48,8 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
                 FollowCamera cam = Camera.main.gameObject.GetComponent<FollowCamera>();
                 cam.Target = transform;
             }
+
+            initGui();
         }
 
         Body = GetComponent<Rigidbody>();
@@ -54,11 +57,6 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
 
         layerMask = 1 << LayerMask.NameToLayer("Kart");
         layerMask = ~layerMask;
-
-        if(KartUIPrefab != null)
-        {
-            kartUI = Instantiate(KartUIPrefab);
-        }
 
         DontDestroyOnLoad(gameObject);
     }
@@ -68,30 +66,42 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void initGUIControls()
+    private void initGui()
     {
-            kartUI.GoBtn.onButtonDown.AddListener(() =>
-            {
-                powerInput = 1.0f;
-            });
-        kartUI.GoBtn.onButtonUp.AddListener(() =>
-            {
-                powerInput = 0f;
-            });
-        kartUI.FireBtn.onButtonDown.AddListener(() =>
-            {
+        if (KartUIPrefab != null)
+        {
+            kartUI = Instantiate(KartUIPrefab);
 
-            });
+            if (kartUI != null && UseGUIControls)
+            {
+                kartUI.EnableMobileControls();
+                kartUI.GoBtn.onButtonDown.AddListener(() =>
+                {
+                    powerInput = 1.0f;
+                });
+                kartUI.GoBtn.onButtonUp.AddListener(() =>
+                {
+                    powerInput = 0f;
+                });
+            }
+        }
     }
-
 
     void Update()
     {
         if (photonView.isMine)
         {
-            powerInput = Input.GetAxis("Vertical");
-            turnInput = Input.GetAxis("Horizontal");
-            slideInput = Input.GetKey(KeyCode.Space);
+            if (kartUI != null && UseGUIControls)
+            {
+                turnInput = kartUI.WheelSlider.value;
+                slideInput = Mathf.Abs(turnInput) > 0.9f;
+            }
+            else
+            {
+                powerInput = Input.GetAxis("Vertical");
+                turnInput = Input.GetAxis("Horizontal");
+                slideInput = Input.GetKey(KeyCode.Space);
+            }
 
             if (isGrounded())
             {
@@ -132,17 +142,23 @@ public class KartRoot : Photon.PunBehaviour, IPunObservable
 
     void FixedUpdate()
     {
-        if(!photonView.isMine)
+        if (!photonView.isMine)
         {
             return;
         }
 
         localVel = transform.InverseTransformDirection(Body.velocity);
         reverse = false;
-        if(localVel.z < -1f)
+        if (localVel.z < -1f)
         {
             reverse = true;
         }
+
+        if (kartUI != null)
+        {
+            kartUI.SetSpeed((int)localVel.z);
+        }
+
 
         turnAndThrust();
         turnWheels();
