@@ -88,9 +88,10 @@ public class Rocket : Photon.PunBehaviour
         {
             if(hit.rigidbody != null)
             {
-                Vector3 direction = hit.transform.position - transform.position;
+                Vector3 direction = transform.position - hit.transform.position;
                 direction.y = 3f;
-                Vector3 explosionForce = direction * (1f - ( hit.distance / ExplosionRadius)) * ExplosionForce;
+                Vector3 explosionForce = direction * (1f - (hit.distance / ExplosionRadius)) * ExplosionForce;
+                Debug.Log(explosionForce.ToString());
                 hit.rigidbody.AddForce(explosionForce, ForceMode.Impulse);
             }
         }
